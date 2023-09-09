@@ -13,8 +13,8 @@ class MessageController extends Controller
 {
     public function index(): array
     {
-        //auth()->user()->id
-        $chat = Chat::where('user_id', 1)->first();
+
+        $chat = Chat::where('user_id', auth()->user()->id)->first();
 
         $messages = $chat->getChatHistory();
 
@@ -25,8 +25,7 @@ class MessageController extends Controller
     {
         $data = $request->validated();
 
-        //auth()->user()->id
-        $chat = Chat::where('user_id', 1)->first();
+        $chat = Chat::where('user_id', auth()->user()->id)->first();
 
         $last_message = null;
 
@@ -51,7 +50,8 @@ class MessageController extends Controller
 
     public function destroy(Question $question): Response
     {
-        // Sqlite - cascading deletion doesn't work
+        // Sqlite - cascading deletion doesn't work,
+        // Delete answers it manually
         $question->answers()->delete();
 
         $question->delete();
