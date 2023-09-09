@@ -8,6 +8,7 @@ use App\Models\Question;
 use App\Services\OpenAiApi;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class MessageController extends Controller
 {
@@ -37,8 +38,8 @@ class MessageController extends Controller
 
             $messages[] = ['question_id' => $question->id, 'question' => $question->message, 'created_at' => $question->created_at];
 
-            //$responseFromOpenAi = 'test!';
-            $responseFromOpenAi = OpenAiApi::getAnswerFromOpenAI($messages);
+            $responseFromOpenAi = 'test!';
+//            $responseFromOpenAi = OpenAiApi::getAnswerFromOpenAI($messages);
             $answer = $question->answers()->create(['message'=>$responseFromOpenAi]);
 
             $last_message = array_pop($messages);
@@ -50,6 +51,7 @@ class MessageController extends Controller
 
     public function destroy(Question $question): Response
     {
+        Gate::authorize('message_delete', $question);
         // Sqlite - cascading deletion doesn't work,
         // Delete answers it manually
         $question->answers()->delete();
