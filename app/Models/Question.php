@@ -13,7 +13,9 @@ class Question extends Model
 
     protected $fillable=['message'];
 
-    public function aswers(){
+    protected $with = ['answers'];
+
+    public function answers(){
         return $this->hasMany(Answer::class);
     }
 }
